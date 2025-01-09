@@ -1,0 +1,33 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Сообщения</h1>
+    <a class="btn btn-primary" href="{% url 'mailing:create_message'%}"
+       role="button">Создать письмо </a>
+</div>
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    {% for message in messages %}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseOne">
+                {{message.subject_message}}
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                {{message.subject_message}}
+                <a class="btn btn-primary" href="{% url 'mailing:detail_message' message.pk  %}"
+                   role="button">Посмотреть</a>
+                <a class="btn btn-primary" href="{% url 'mailing:update_message' message.pk  %}"
+                   role="button">Редактировать</a>
+                <a class="btn btn-danger" href="{% url 'mailing:delete_message' message.pk  %}"
+                   role="button">Удалить</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

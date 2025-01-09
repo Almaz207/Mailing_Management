@@ -1,0 +1,18 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <p class="card-text">Имя: {{object.subject_message}}</p>
+        <p class="card-text">Почта: {{object.body_message}}</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group">
+                <a class="btn btn-primary" href="{% url 'mailing:list_message'%}"
+                   role="button">Назад</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+

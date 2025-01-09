@@ -1,0 +1,22 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Получатели</h1>
+    <a class="btn btn-primary" href="{% url 'mailing:create_client'%}"
+       role="button">Создать клиента </a>
+</div>
+{% for recipient in recipients %}
+<div class="card">
+    <div class="card-body">
+        {{recipient.full_name}}
+        <a class="btn btn-primary" href="{% url 'mailing:detail_client' recipient.pk  %}"
+           role="button">Посмотреть</a>
+        <a class="btn btn-primary" href="{% url 'mailing:update_client' recipient.pk  %}"
+           role="button">Редактировать</a>
+        <a class="btn btn-danger" href="{% url 'mailing:delete_client' recipient.pk  %}"
+           role="button">Удалить</a>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

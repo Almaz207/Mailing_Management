@@ -1,0 +1,25 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Рассылки</h1>
+    <a class="btn btn-primary" href="{% url 'mailing:create_mailout'%}"
+       role="button">Создать рассылку </a>
+</div>
+
+{% for mailout in mailings %}
+<div class="card">
+    <div class="card-body">
+        {{mailout.message.subject_message}}
+        <a class="btn btn-success " href="{% url 'mailing:send_mail' mailout.pk  %}"
+           role="button">Отправить</a>
+        <a class="btn btn-primary" href="{% url 'mailing:detail_mailout' mailout.pk  %}"
+           role="button">Посмотреть</a>
+        <a class="btn btn-primary" href="{% url 'mailing:update_mailout' mailout.pk  %}"
+           role="button">Редактировать</a>
+        <a class="btn btn-outline-danger " href="{% url 'mailing:delete_mailout' mailout.pk  %}"
+           role="button">Удалить</a>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
