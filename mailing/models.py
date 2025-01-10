@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import CustomUser
 
 
 class MailingRecipient(models.Model):
@@ -9,6 +10,7 @@ class MailingRecipient(models.Model):
     email = models.EmailField(unique=True, verbose_name='email')
     full_name = models.CharField(max_length=100, verbose_name='Имя клиента')
     comment = models.TextField(verbose_name='Комментарий')
+    ownership = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, verbose_name='Владелец', null=True, blank=True)
 
     def __str__(self):
         return f'{self.full_name}'
@@ -57,6 +59,7 @@ class Mailout(models.Model):
                                       verbose_name='статус рассылки')
     message = models.ForeignKey(Message, on_delete=models.CASCADE, verbose_name='Сообщение')
     recipient = models.ManyToManyField(MailingRecipient, verbose_name='Получатели')
+    ownership = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, verbose_name='Владелец', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Рассылка'
@@ -64,6 +67,8 @@ class Mailout(models.Model):
 
     def __str__(self):
         return f'{self.message}'
+
+
 class AttemptToSend(models.Model):
     """Попытка рассылки
     Дата и время попытки (datetime).
@@ -84,6 +89,7 @@ class AttemptToSend(models.Model):
                                       verbose_name='статус рассылки')
     mailing_server_response = models.TextField(verbose_name='ответ почтового сервера')
     mailout = models.ForeignKey(Mailout, on_delete=models.CASCADE, verbose_name='рассылка')
+
 
     class Meta:
         verbose_name = 'Попытка рассылки'

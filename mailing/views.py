@@ -13,6 +13,13 @@ class CreateMailingRecipient(CreateView):
     template_name = 'mailing/recipient_form.html'
     success_url = reverse_lazy('mailing:list_client')
 
+    def form_valid(self, form):
+        recipient = form.save()
+        user = self.request.user
+        recipient.ownership = user
+        recipient.save()
+        return super().form_valid(form)
+
 
 class ListMailingRecipient(ListView):
     model = MailingRecipient
@@ -71,17 +78,18 @@ class DeleteMessage(DeleteView):
     success_url = reverse_lazy('mailing:list_message')
 
 
-class CreateAttemptToSend(CreateView):
-    pass
-
-
 class CreateMailout(CreateView):
     model = Mailout
     form_class = MailoutForms
     template_name = 'mailing/mailout_form.html'
     success_url = reverse_lazy('mailing:list_mailout')
 
-
+    def form_valid(self, form):
+        mailout = form.save()
+        user = self.request.user
+        mailout.ownership = user
+        mailout.save()
+        return super().form_valid(form)
 
 
 class ListMailout(ListView):
