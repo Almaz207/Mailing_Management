@@ -313,11 +313,13 @@
                                 Отчёты
                             </a>
                         </li>
+                        {% if perms.users.disabling_users %}
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center gap-2" href="{% url 'users:list_users' %}">
                                 Сотрудники
                             </a>
                         </li>
+                        {% endif %}
                     </ul>
 
                     <hr class="my-3">

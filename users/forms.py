@@ -5,6 +5,11 @@ from django.forms import ModelForm
 from .models import CustomUser
 
 
+class StyleFormMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
 class CustomUserCreationForm(UserCreationForm):
     phone_number = forms.CharField(max_length=15, required=False,
                                    help_text='Необязательное поле. Введите ваш номер телефона.')
@@ -20,7 +25,7 @@ class CustomUserCreationForm(UserCreationForm):
         return phone_number
 
 
-class CustomUserUpdateForm(UserChangeForm, ModelForm):
-    class Meta(UserChangeForm.Meta):
+class CustomUserUpdateForm(StyleFormMixin, ModelForm):
+    class Meta:
         model = CustomUser
-        fields = ('username', 'first_name', 'last_name', 'is_active')
+        fields = ('first_name', 'last_name', 'username', 'is_active')

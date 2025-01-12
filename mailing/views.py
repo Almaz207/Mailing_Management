@@ -26,6 +26,14 @@ class ListMailingRecipient(LoginRequiredMixin, ListView):
     template_name = 'mailing/recipient_list.html'
     context_object_name = 'recipients'
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        if user.has_perm('users.mailing_permission'):
+            return queryset
+        else:
+            return queryset.filter(ownership=user)
+
 
 class DetailMailingRecipient(LoginRequiredMixin, DetailView):
     model = MailingRecipient
@@ -96,6 +104,14 @@ class ListMailout(LoginRequiredMixin, ListView):
     model = Mailout
     template_name = 'mailing/list_mailout.html'
     context_object_name = 'mailings'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        if user.has_perm('users.mailing_permission'):
+            return queryset
+        else:
+            return queryset.filter(ownership=user)
 
 
 class DetailMailout(LoginRequiredMixin, DetailView):

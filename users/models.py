@@ -9,5 +9,14 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+        permissions = [
+            ('mailing_permission', 'mailing pemission'), #блокировка(просмотра редакции) рассылок
+            ('disabling_users', 'disabling users'), #блокировка пользователей
+            ('disabling_mailing', 'disabling mailing'), #блокировка рассылок
+        ]
+
     def __str__(self):
         return self.email
