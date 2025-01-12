@@ -2,12 +2,12 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView, View, TemplateView
 from django.urls import reverse_lazy
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import RecipientForms, MessageForms, MailoutForms
 from .models import MailingRecipient, Message, Mailout, AttemptToSend
 
 
-class CreateMailingRecipient(CreateView):
+class CreateMailingRecipient(LoginRequiredMixin, CreateView):
     model = MailingRecipient
     form_class = RecipientForms
     template_name = 'mailing/recipient_form.html'
@@ -21,64 +21,64 @@ class CreateMailingRecipient(CreateView):
         return super().form_valid(form)
 
 
-class ListMailingRecipient(ListView):
+class ListMailingRecipient(LoginRequiredMixin, ListView):
     model = MailingRecipient
     template_name = 'mailing/recipient_list.html'
     context_object_name = 'recipients'
 
 
-class DetailMailingRecipient(DetailView):
+class DetailMailingRecipient(LoginRequiredMixin, DetailView):
     model = MailingRecipient
     form_class = RecipientForms
     template_name = 'mailing/recipient_detail.html'
 
 
-class UpdateMailingRecipient(UpdateView):
+class UpdateMailingRecipient(LoginRequiredMixin, UpdateView):
     model = MailingRecipient
     form_class = RecipientForms
     template_name = 'mailing/recipient_form.html'
     success_url = reverse_lazy('mailing:list_client')
 
 
-class DeleteMailingRecipient(DeleteView):
+class DeleteMailingRecipient(LoginRequiredMixin, DeleteView):
     model = MailingRecipient
     template_name = 'mailing/recipient_delete.html'
     success_url = reverse_lazy('mailing:list_client')
 
 
-class CreateMessage(CreateView):
+class CreateMessage(LoginRequiredMixin, CreateView):
     model = Message
     form_class = MessageForms
     template_name = 'mailing/message_form.html'
     success_url = reverse_lazy('mailing:list_message')
 
 
-class ListMessage(ListView):
+class ListMessage(LoginRequiredMixin, ListView):
     model = Message
     template_name = 'mailing/message_list.html'
     context_object_name = 'messages'
 
 
-class DetailMessage(DetailView):
+class DetailMessage(LoginRequiredMixin, DetailView):
     model = Message
     form_class = MessageForms
     template_name = 'mailing/message_detail.html'
 
 
-class UpdateMessage(UpdateView):
+class UpdateMessage(LoginRequiredMixin, UpdateView):
     model = Message
     form_class = MessageForms
     template_name = 'mailing/message_form.html'
     success_url = reverse_lazy('mailing:list_message')
 
 
-class DeleteMessage(DeleteView):
+class DeleteMessage(LoginRequiredMixin, DeleteView):
     model = Message
     template_name = 'mailing/message_delete.html'
     success_url = reverse_lazy('mailing:list_message')
 
 
-class CreateMailout(CreateView):
+class CreateMailout(LoginRequiredMixin, CreateView):
     model = Mailout
     form_class = MailoutForms
     template_name = 'mailing/mailout_form.html'
@@ -92,32 +92,32 @@ class CreateMailout(CreateView):
         return super().form_valid(form)
 
 
-class ListMailout(ListView):
+class ListMailout(LoginRequiredMixin, ListView):
     model = Mailout
     template_name = 'mailing/list_mailout.html'
     context_object_name = 'mailings'
 
 
-class DetailMailout(DetailView):
+class DetailMailout(LoginRequiredMixin, DetailView):
     model = Mailout
     form_class = MailoutForms
     template_name = 'mailing/mailout_detail.html'
 
 
-class UpdateMailout(UpdateView):
+class UpdateMailout(LoginRequiredMixin, UpdateView):
     model = Mailout
     form_class = MailoutForms
     template_name = 'mailing/mailout_form.html'
     success_url = reverse_lazy('mailing:list_mailout')
 
 
-class DeleteMailout(DeleteView):
+class DeleteMailout(LoginRequiredMixin, DeleteView):
     model = Mailout
     template_name = 'mailing/mailout_delete.html'
     success_url = reverse_lazy('mailing:list_mailout')
 
 
-class MailingAttempt(View):
+class MailingAttempt(LoginRequiredMixin, View):
     def get(self, request, pk, *args, **kwargs):
         # template_name = 'mailing/attempt_mailing.html'
         mailout = get_object_or_404(Mailout, pk=pk)
@@ -156,7 +156,7 @@ class MailingAttempt(View):
         return redirect('mailing:list_mailout')
 
 
-class HomePage(TemplateView):
+class HomePage(LoginRequiredMixin, TemplateView):
     template_name = 'mailing/home_page.html'
 
     def get_context_data(self, **kwargs):
