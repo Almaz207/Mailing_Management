@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import RecipientForms, MessageForms, MailoutForms
 from .models import MailingRecipient, Message, Mailout, AttemptToSend
+from .service import MailingService
 
 
 class CreateMailingRecipient(LoginRequiredMixin, CreateView):
@@ -27,7 +28,7 @@ class ListMailingRecipient(LoginRequiredMixin, ListView):
     context_object_name = 'recipients'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = MailingService.get_all_recipient()
         user = self.request.user
         if user.has_perm('users.mailing_permission'):
             return queryset
@@ -65,6 +66,10 @@ class ListMessage(LoginRequiredMixin, ListView):
     model = Message
     template_name = 'mailing/message_list.html'
     context_object_name = 'messages'
+
+    def get_queryset(self):
+        queryset = MailingService.get_all_massage()
+        return queryset
 
 
 class DetailMessage(LoginRequiredMixin, DetailView):
@@ -106,7 +111,7 @@ class ListMailout(LoginRequiredMixin, ListView):
     context_object_name = 'mailings'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = MailingService.get_all_mailout()
         user = self.request.user
         if user.has_perm('users.mailing_permission'):
             return queryset
