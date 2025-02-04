@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import CustomUser
 
 
 class MailingRecipient(models.Model):
@@ -6,17 +7,32 @@ class MailingRecipient(models.Model):
     Email
     Ф. И. О.
     Комментарий """
-    email = models.EmailField(unique=True)
-    full_name = models.CharField(max_length=100)
-    comment = models.TextField()
+    email = models.EmailField(unique=True, verbose_name='email')
+    full_name = models.CharField(max_length=100, verbose_name='Имя клиента')
+    comment = models.TextField(verbose_name='Комментарий')
+    ownership = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, verbose_name='Владелец', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.full_name}'
+
+    class Meta:
+        verbose_name = 'Получатель'
+        verbose_name_plural = 'Получатели'
 
 
 class Message(models.Model):
     """Сообщение
     Тема письма
     Тело письма """
-    subject_message = models.CharField(max_length=100)
-    body_message = models.TextField()
+    subject_message = models.CharField(max_length=100, verbose_name='Тема письма')
+    body_message = models.TextField(verbose_name='Текст сообщения')
+
+    def __str__(self):
+        return f'{self.subject_message}'
+
+    class Meta:
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Сообщения'
 
 
 class Mailout(models.Model):
@@ -37,12 +53,20 @@ class Mailout(models.Model):
         (COMPLETED, 'завершена'),
     ]
 
-    datime_first_sending = models.DateTimeField()
-    datime_end_sending = models.DateTimeField()
+    datime_first_sending = models.DateTimeField(verbose_name='дата и время первой отправки')
+    datime_end_sending = models.DateTimeField(verbose_name='дата и время последней отправки', null=True, blank=True)
     status_mailing = models.CharField(max_length=9, choices=STATUS_MAILOUT_CHOICES, default=CREATED,
                                       verbose_name='статус рассылки')
-    message = models.ForeignKey(Message, on_delete=models.CASCADE)
-    recipient = models.ManyToManyField(MailingRecipient)
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, verbose_name='Сообщение')
+    recipient = models.ManyToManyField(MailingRecipient, verbose_name='Получатели')
+    ownership = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, verbose_name='Владелец', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Рассылка'
+        verbose_name_plural = 'Рассылки'
+
+    def __str__(self):
+        return f'{self.message}'
 
 
 class AttemptToSend(models.Model):
@@ -60,7 +84,13 @@ class AttemptToSend(models.Model):
         (NOT_SUCCESSFULLY, 'не успешно'),
     ]
 
-    datime_attempt = models.DateTimeField
-    status_attempt = models.CharField(max_length=14, choices=STATUS_ATTEMPT_CHOICES, default=NOT_SUCCESSFULLY)
-    mailing_server_response = models.TextField()
-    mailout = models.ForeignKey(Mailout, on_delete=models.CASCADE)
+    datime_attempt = models.DateTimeField(auto_now_add=True)
+    status_attempt = models.CharField(max_length=14, choices=STATUS_ATTEMPT_CHOICES, default=NOT_SUCCESSFULLY,
+                                      verbose_name='статус рассылки')
+    mailing_server_response = models.TextField(verbose_name='ответ почтового сервера')
+    mailout = models.ForeignKey(Mailout, on_delete=models.CASCADE, verbose_name='рассылка')
+
+
+    class Meta:
+        verbose_name = 'Попытка рассылки'
+        verbose_name_plural = 'Попытки рассылки'

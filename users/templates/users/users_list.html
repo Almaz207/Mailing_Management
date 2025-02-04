@@ -1,0 +1,18 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Пользователи</h1>
+</div>
+{% for user in users_objects %}
+<div class="card">
+    <div class="card-body">
+        {{user.username}}
+        <a class="btn btn-primary" href="{% url 'users:update_user' user.pk  %}"
+           role="button">Редактировать</a>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+<!--{% url 'users:update_user' users_objects.pk  %}-->
